@@ -8,6 +8,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import CartWidget from '../cartWidget/CartWidget';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -23,11 +24,11 @@ const Navbar = () => {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            <ComputerIcon sx={{ mr: 2 }} />
             <Typography
               variant="h6"
               noWrap
-              component="div"
+              component={Link}
+              to="/"
               sx={{
                 mr: 36,
                 display: { xs: 'none', md: 'flex' },
@@ -36,8 +37,13 @@ const Navbar = () => {
                 letterSpacing: '.3rem',
                 color: 'inherit',
                 textDecoration: 'none',
+                '&:hover': {
+                  color: '#eab676',
+                  textDecoration: 'none',
+                },
               }}
             >
+              <ComputerIcon sx={{ mr: 1.5, mt: 0.5 }} />
               CodingTec
             </Typography>
             <div>
@@ -49,7 +55,7 @@ const Navbar = () => {
                 sx={{ mr: 2, display: { xs: 'none', md: 'flex' }, fontFamily: 'monospace', fontWeight: 600, fontSize: 20, color: 'inherit', textDecoration: 'none' }}
                 onClick={handleClick}
               >
-                CURSOS
+                CATEGORIAS
               </Button>
               <Menu
                 id="demo-positioned-menu"
@@ -66,9 +72,9 @@ const Navbar = () => {
                   horizontal: 'left',
                 }}
               >
-                <MenuItem onClick={handleClose}>Desarrollo Web</MenuItem>
-                <MenuItem onClick={handleClose}>Desarrollo Movil</MenuItem>
-                <MenuItem onClick={handleClose}>Desarrollo VR/AR</MenuItem>
+                <MenuItem onClick={handleClose} component={Link} to="/category/electronics">Electronica</MenuItem>
+                <MenuItem onClick={handleClose} component={Link} to="/category/jewelery">Joyeria</MenuItem>
+                <MenuItem onClick={handleClose} component={Link} to="/category/women's clothing">Ropa de mujer</MenuItem>
               </Menu>
             </div>
             <Button
