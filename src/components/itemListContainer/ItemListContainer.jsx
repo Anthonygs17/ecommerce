@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from './ItemListContainer.module.css';
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../firebase/client";
 
 const ItemListContainer = () => {
     const { categoryId } = useParams();
@@ -9,20 +11,25 @@ const ItemListContainer = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch('https://fakestoreapi.com/products')
-            .then(response => response.json())
+        let productsRef;
+        if(categoryId){
+            productsRef = query(collection(db, 'products'), where('category', '==', categoryId));
+        }else{
+            productsRef = collection(db, 'products');
+        }
+        const getProducts = async () => {
+            const productsSnapshot = await getDocs(productsRef);
+            const productsList = productsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            return productsList;
+        };
+        getProducts()
             .then(data => {
-                if (categoryId) {
-                    setProducts(data.filter(product => product.category === categoryId));
-                } else {
-                    setProducts(data);
-                }
+                setProducts(data);
                 setLoading(false);
             })
             .catch(error => console.error(error));
-    }
-    , [categoryId]);
-
+    }, [categoryId]);
+    
     if (loading) {
         return <h1>Cargando...</h1>;
     }
@@ -36,7 +43,7 @@ const ItemListContainer = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {products.map(product => (
+                    {products?.map(product => (
                         <tr key={product.id} onClick={() => navigate(`/item/${product.id}`)}>
                             <td className={styles.td}>{product.title}</td>
                         </tr>
